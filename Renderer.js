@@ -11,9 +11,11 @@ class Renderer {
 	}
 
 	redrawCells(elementArray) {
+		let index = 0;
 		for (const row of this.board.HTMLtable.rows) {
 			for (const cell of row.cells) {
-				const element = elementArray.pop();
+				const element = elementArray[index];
+				index++;
 				if (!element) {
 					continue;
 				}
