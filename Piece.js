@@ -5,12 +5,23 @@ class Piece {
 	}
 
 	getMoves(pos, game) {
-		return this.filterMoves(
-			this.color
-				? [pos.add(new Vector(1, 1)), pos.add(new Vector(1, -1))]
-				: [pos.add(new Vector(-1, -1)), pos.add(new Vector(-1, 1))],
-			game
-		);
+		const moves = [];
+		const direction = this.color ? 1 : -1;
+
+		moves.push(pos.add(new Vector(direction, direction)));
+		moves.push(pos.add(new Vector(1 * direction, -1 * direction)));
+
+		for (const move of moves) {
+			if (game.getPieceAt(move) !== undefined) {
+				const testMove = move.add(direction);
+				console.log(testMove);
+				if (game.getPieceAt(testMove) === undefined) {
+					moves.push(testMove);
+				}
+			}
+		}
+
+		return this.filterMoves(moves, game);
 	}
 
 	filterMoves(moves, game) {

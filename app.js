@@ -16,6 +16,9 @@ class Vector {
 	}
 
 	add(vec) {
+		if (typeof(vec) === "number") {
+			return new Vector(this.x + vec, this.y + vec);
+		}
 		return new Vector(this.x + vec.x, this.y + vec.y);
 	}
 }
