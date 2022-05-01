@@ -11,6 +11,10 @@ class Vector {
 		this.y = y;
 	}
 
+	isEqual(vec) {
+		return vec.x === this.x && vec.y === this.y;
+	}
+
 	add(vec) {
 		return new Vector(this.x + vec.x, this.y + vec.y);
 	}
@@ -20,4 +24,3 @@ const htmlBoard = new HTMLBoard();
 const renderer = new Renderer(htmlBoard);
 const game = new Game(renderer, htmlBoard);
 htmlBoard.appendToElement(document.getElementsByTagName("body")[0]);
-

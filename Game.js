@@ -8,6 +8,8 @@ class Game {
 			cell.addEventListener("click", this.onClick)
 		);
 		this.initGame();
+
+		this.selectedMoves = [];
 	}
 
 	initGame() {
@@ -48,10 +50,21 @@ class Game {
 	onClick(event) {
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
-        this.renderer.cleanCells();
-		this.renderer.paintCells(
-			this.getPieceAt(pos).getMoves(pos, this),
-			"valid-move"
-		);
+		if (this.selectedMoves.some((e) => pos.isEqual(e))) {
+			this.movePiece(this.selectedPos, pos);
+		}
+		if (this.getPieceAt(pos)) {
+			this.selectedPos = pos;
+			this.selectedMoves = this.getPieceAt(pos).getMoves(pos, this);
+			this.renderer.cleanCells();
+			this.renderer.paintCells(this.selectedMoves, "valid-move");
+		}
+	}
+
+	movePiece(from, to) {
+		this.boardArr[to.x * BOARD_SIZE + to.y] =
+			this.boardArr[from.x * BOARD_SIZE + from.y];
+		this.boardArr[from.x * BOARD_SIZE + from.y] = undefined;
+        this.renderer.movePiece(from, to);
 	}
 }

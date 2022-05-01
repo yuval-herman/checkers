@@ -25,6 +25,10 @@ class Renderer {
 		}
 	}
 
+	movePiece(from, to) {
+		this.board.getCell(to).appendChild(this.board.getCell(from).lastChild);
+	}
+
 	paintCells(positions, cssClass) {
 		this.board.positionsToHtmlElements(positions).forEach((element) => {
 			element.classList.add(cssClass);
