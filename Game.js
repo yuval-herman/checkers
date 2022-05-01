@@ -48,6 +48,10 @@ class Game {
 	onClick(event) {
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
-		console.log(this.getPieceAt(pos).getMoves());
+        this.renderer.cleanCells();
+		this.renderer.paintCells(
+			this.getPieceAt(pos).getMoves(pos, this.boardArr),
+			"valid-move"
+		);
 	}
 }

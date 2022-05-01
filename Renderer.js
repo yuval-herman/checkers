@@ -1,6 +1,7 @@
 class Renderer {
 	constructor(board) {
 		this.board = board;
+		this.paintedCells = [];
 	}
 
 	renderPiece(piece) {
@@ -21,6 +22,19 @@ class Renderer {
 				}
 				cell.appendChild(this.renderPiece(element));
 			}
+		}
+	}
+
+	paintCells(positions, cssClass) {
+		this.board.positionsToHtmlElements(positions).forEach((element) => {
+			element.classList.add(cssClass);
+			this.paintedCells.push(element);
+		});
+	}
+
+	cleanCells() {
+		for (const cell of this.paintedCells) {
+			cell.className = "";
 		}
 	}
 }
