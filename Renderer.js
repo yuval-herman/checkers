@@ -29,6 +29,10 @@ class Renderer {
 		this.board.getCell(to).appendChild(this.board.getCell(from).lastChild);
 	}
 
+	removePiece(pos) {
+		this.board.getCell(pos).innerHTML = "";
+	}
+
 	paintCells(positions, cssClass) {
 		this.board.positionsToHtmlElements(positions).forEach((element) => {
 			element.classList.add(cssClass);

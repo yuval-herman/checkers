@@ -48,13 +48,20 @@ class Game {
 		return this.boardArr[pos.x * BOARD_SIZE + pos.y];
 	}
 
+	checkPieceColorAt(pos) {
+		return this.boardArr[pos.x * BOARD_SIZE + pos.y]
+			? this.boardArr[pos.x * BOARD_SIZE + pos.y].color
+			: undefined;
+	}
+
 	onClick(event) {
 		this.renderer.cleanCells();
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
 
-		if (this.selectedMoves.some((e) => pos.isEqual(e))) {
-			this.movePiece(this.selectedPos, pos);
+		const move = this.selectedMoves.find((e) => pos.isEqual(e));
+		if (move) {
+			this.movePiece(this.selectedPos, move);
 			this.turnOf = !this.turnOf;
 			this.selectedPos = undefined;
 			this.selectedMoves = [];
@@ -68,10 +75,19 @@ class Game {
 		}
 	}
 
+	removePiece(pos) {
+		this.boardArr[pos.x * BOARD_SIZE + pos.y] = undefined;
+		this.renderer.removePiece(pos);
+	}
+
 	movePiece(from, to) {
 		this.boardArr[to.x * BOARD_SIZE + to.y] =
 			this.boardArr[from.x * BOARD_SIZE + from.y];
 		this.boardArr[from.x * BOARD_SIZE + from.y] = undefined;
 		this.renderer.movePiece(from, to);
+
+		if (to.eating) {
+			this.removePiece(to.eating);
+		}
 	}
 }
