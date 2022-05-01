@@ -73,6 +73,7 @@ class Game {
 			this.selectedMoves = this.getPieceAt(pos).getMoves(pos, this);
 			this.renderer.paintCells(this.selectedMoves, "valid-move");
 		}
+		this.checkWin();
 	}
 
 	removePiece(pos) {
@@ -90,4 +91,25 @@ class Game {
 			this.removePiece(to.eating);
 		}
 	}
+
+	checkWin() {
+		let whites = 0;
+		let blacks = 0;
+		this.boardArr.forEach((e) => {
+			if (!e) return;
+			e.color ? whites++ : blacks++;
+		});
+
+		if (blacks === 0) {
+            this.showBanner("white")
+		} else if (whites === 0) {
+            this.showBanner("black")
+		}
+	}
+
+    showBanner(playerName) {
+        const banner = document.getElementById("win-ovelay");
+		banner.style.display = "inherit";
+		banner.lastElementChild.textContent = playerName + " Won!!";
+    }
 }
