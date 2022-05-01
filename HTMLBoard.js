@@ -41,6 +41,14 @@ class HTMLBoard {
 		}
 	}
 
+	modifyCells(func) {
+		for (const row of this.HTMLtable.rows) {
+			for (const cell of row.cells) {
+				func(cell);
+			}
+		}
+	}
+
 	// append the table to another DOM element
 	appendToElement(element) {
 		element.appendChild(this.HTMLtable);
