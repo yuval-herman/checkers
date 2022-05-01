@@ -17,27 +17,36 @@ class Vector {
 }
 
 const htmlBoard = new HTMLBoard();
+const renderer = new Renderer(htmlBoard);
 htmlBoard.appendToElement(document.getElementsByTagName("body")[0]);
 
-const boardArr = [[]];
+const boardArr = [];
 
-for (let i = 0; i < 3; i++) {
-	for (let j = 0; j < BOARD_SIZE; j++) {
-		boardArr[0].push(new Piece(false, ""));
+let alternate = true;
+for (let i = 0; i < BOARD_SIZE * 3; i++) {
+	if (i % 8 !== 0) {
+		alternate = !alternate;
 	}
-	boardArr.push([]);
-}
-
-for (let i = 3; i < 5; i++) {
-	const element = [i];
-	boardArr.push([]);
-}
-
-for (let i = 5; i < 8; i++) {
-	for (let j = 0; j < BOARD_SIZE; j++) {
-		boardArr[i].push(new Piece(true, ""));
+	if (alternate) {
+		boardArr.push(new Piece(false, "pieces/darkPiece.svg"));
+	} else {
+		boardArr.push(undefined);
 	}
-	boardArr.push([]);
 }
 
-htmlBoard.placeInCells(boardArr);
+for (let i = BOARD_SIZE * 3; i < BOARD_SIZE * 5; i++) {
+	boardArr.push(undefined);
+}
+
+for (let i = BOARD_SIZE * 5; i < BOARD_SIZE * 8; i++) {
+	if (i % 8 !== 0) {
+		alternate = !alternate;
+	}
+	if (alternate) {
+		boardArr.push(new Piece(true, "pieces/lightPiece.svg"));
+	} else {
+		boardArr.push(undefined);
+	}
+}
+
+renderer.redrawCells(boardArr.reverse());

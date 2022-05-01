@@ -2,6 +2,7 @@ const BOARD_SIZE = 8;
 
 class HTMLBoard {
 	constructor() {
+		this.HTMLtable;
 		this.makeTable(); // Makes the HTML table
 	}
 	getCell(pos) {
