@@ -10,6 +10,7 @@ class Game {
 		this.initGame();
 
 		this.selectedMoves = [];
+		this.turnOf = true;
 	}
 
 	initGame() {
@@ -48,15 +49,21 @@ class Game {
 	}
 
 	onClick(event) {
+		this.renderer.cleanCells();
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
+
 		if (this.selectedMoves.some((e) => pos.isEqual(e))) {
 			this.movePiece(this.selectedPos, pos);
-		}
-		if (this.getPieceAt(pos)) {
+			this.turnOf = !this.turnOf;
+			this.selectedPos = undefined;
+			this.selectedMoves = [];
+		} else if (
+			this.getPieceAt(pos) &&
+			this.getPieceAt(pos).color == this.turnOf
+		) {
 			this.selectedPos = pos;
 			this.selectedMoves = this.getPieceAt(pos).getMoves(pos, this);
-			this.renderer.cleanCells();
 			this.renderer.paintCells(this.selectedMoves, "valid-move");
 		}
 	}
@@ -65,6 +72,6 @@ class Game {
 		this.boardArr[to.x * BOARD_SIZE + to.y] =
 			this.boardArr[from.x * BOARD_SIZE + from.y];
 		this.boardArr[from.x * BOARD_SIZE + from.y] = undefined;
-        this.renderer.movePiece(from, to);
+		this.renderer.movePiece(from, to);
 	}
 }
