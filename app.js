@@ -26,4 +26,4 @@ class Vector {
 const htmlBoard = new HTMLBoard();
 const renderer = new Renderer(htmlBoard);
 const game = new Game(renderer, htmlBoard);
-htmlBoard.appendToElement(document.getElementsByTagName("body")[0]);
+document.getElementsByTagName("body")[0].appendChild(htmlBoard.HTMLtable)

@@ -16,11 +16,10 @@ class Renderer {
 		for (const row of this.board.HTMLtable.rows) {
 			for (const cell of row.cells) {
 				const element = elementArray[index];
-				index++;
-				if (!element) {
-					continue;
-				}
+				if (!element) continue;
+                
 				cell.appendChild(this.renderPiece(element));
+				index++;
 			}
 		}
 	}

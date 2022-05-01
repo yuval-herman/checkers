@@ -5,15 +5,9 @@ class HTMLBoard {
 		this.HTMLtable;
 		this.makeTable(); // Makes the HTML table
 	}
+
 	getCell(pos) {
 		return this.HTMLtable.rows[pos.x].cells[pos.y];
-	}
-
-	makePieceElement(imgPath) {
-		const img = document.createElement("img");
-		img.src = imgPath;
-		img.className = "piece";
-		return img;
 	}
 
 	positionsToHtmlElements(positions) {
@@ -47,15 +41,5 @@ class HTMLBoard {
 				func(cell);
 			}
 		}
-	}
-
-	// append the table to another DOM element
-	appendToElement(element) {
-		element.appendChild(this.HTMLtable);
-	}
-
-	movePiece(fromPos, toPos) {
-		this.getCell(toPos).innerHTML = "";
-		this.getCell(toPos).appendChild(this.getCell(fromPos).firstChild);
 	}
 }

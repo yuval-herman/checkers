@@ -9,7 +9,8 @@ class Game {
 		);
 		this.initGame();
 
-		this.selectedMoves = [];
+		this.selected = {};
+		this.resetSelected();
 		this.turnOf = true;
 	}
 
@@ -55,22 +56,28 @@ class Game {
 	}
 
 	onClick(event) {
-		this.renderer.cleanCells();
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
+		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
-		const move = this.selectedMoves.find((e) => pos.isEqual(e));
+		this.renderer.cleanCells();
+		this.renderer.paintCells([pos], "highlight");
+
 		if (move) {
-			this.movePiece(this.selectedPos, move);
+			this.movePiece(this.selected.pos, move);
 			this.turnOf = !this.turnOf;
-			this.selectedPos = undefined;
-			this.selectedMoves = [];
+			this.resetSelected();
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
-			this.selectedPos = pos;
-			this.selectedMoves = this.getPieceAt(pos).getMoves(pos, this);
-			this.renderer.paintCells(this.selectedMoves, "valid-move");
+			this.selected.pos = pos;
+			this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
+			this.renderer.paintCells(this.selected.moves, "valid-move");
 		}
 		this.checkWin();
+	}
+
+	resetSelected() {
+		this.selected.pos = undefined;
+		this.selected.moves = [];
 	}
 
 	removePiece(pos) {
