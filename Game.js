@@ -50,7 +50,7 @@ class Game {
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
         this.renderer.cleanCells();
 		this.renderer.paintCells(
-			this.getPieceAt(pos).getMoves(pos, this.boardArr),
+			this.getPieceAt(pos).getMoves(pos, this),
 			"valid-move"
 		);
 	}

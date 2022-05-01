@@ -4,16 +4,19 @@ class Piece {
 		this.imgPath = imgPath;
 	}
 
-	getMoves(pos, boardArr) {
+	getMoves(pos, game) {
 		return this.filterMoves(
 			this.color
 				? [pos.add(new Vector(1, 1)), pos.add(new Vector(1, -1))]
-				: [pos.add(new Vector(-1, -1)), pos.add(new Vector(-1, 1))]
+				: [pos.add(new Vector(-1, -1)), pos.add(new Vector(-1, 1))],
+			game
 		);
 	}
 
-	filterMoves(moves, boardArr) {
-		return moves.filter((e) => !this.isOutOfBounds(e));
+	filterMoves(moves, game) {
+		return moves.filter((e) => {
+			return !this.isOutOfBounds(e) && game.getPieceAt(e) === undefined;
+		});
 	}
 
 	isOutOfBounds(pos) {
