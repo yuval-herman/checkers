@@ -41,7 +41,7 @@ class Game {
 			}
 		}
 
-		this.renderer.redrawCells(this.boardArr.reverse());
+		this.renderer.redrawCells(this.boardArr);
 	}
 
 	getPieceAt(pos) {
@@ -65,10 +65,7 @@ class Game {
 			this.turnOf = !this.turnOf;
 			this.selectedPos = undefined;
 			this.selectedMoves = [];
-		} else if (
-			this.getPieceAt(pos) &&
-			this.getPieceAt(pos).color == this.turnOf
-		) {
+		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
 			this.selectedPos = pos;
 			this.selectedMoves = this.getPieceAt(pos).getMoves(pos, this);
 			this.renderer.paintCells(this.selectedMoves, "valid-move");
@@ -101,15 +98,15 @@ class Game {
 		});
 
 		if (blacks === 0) {
-            this.showBanner("white")
+			this.showBanner("white");
 		} else if (whites === 0) {
-            this.showBanner("black")
+			this.showBanner("black");
 		}
 	}
 
-    showBanner(playerName) {
-        const banner = document.getElementById("win-ovelay");
+	showBanner(playerName) {
+		const banner = document.getElementById("win-ovelay");
 		banner.style.display = "inherit";
 		banner.lastElementChild.textContent = playerName + " Won!!";
-    }
+	}
 }

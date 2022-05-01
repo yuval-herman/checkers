@@ -7,7 +7,7 @@ class Piece {
 	getMoves(pos, game) {
 		const moves = [];
 		let testMove;
-		const direction = this.color ? 1 : -1;
+		const direction = this.color ? -1 : 1;
 
 		moves.push(pos.add(new Vector(direction, direction)));
 		moves.push(pos.add(new Vector(1 * direction, -1 * direction)));
