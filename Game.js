@@ -1,3 +1,6 @@
+const BLACK = "blacks";
+const WHITE = "whites";
+
 class Game {
 	constructor(renderer, htmlTable) {
 		this.renderer = renderer;
@@ -61,7 +64,7 @@ class Game {
 		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
 		this.renderer.cleanCells();
-        this.renderer.paintCells([pos], "highlight");
+		this.renderer.paintCells([pos], "highlight");
 
 		if (move) {
 			this.movePiece(this.selected.pos, move);
@@ -72,9 +75,9 @@ class Game {
 			this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
 			this.renderer.paintCells(this.selected.moves, "valid-move");
 		} else if (this.getPieceAt(pos)) {
-            this.renderer.cleanCells();
+			this.renderer.cleanCells();
 			this.renderer.paintCells([pos], "not-your-turn");
-        }
+		}
 		this.checkWin();
 	}
 
@@ -99,7 +102,25 @@ class Game {
 		}
 	}
 
+	canPlayerMove(color) {
+		for (let i = 0; i < this.boardArr.length; i++) {
+			const piece = this.boardArr[i];
+			if (
+				piece &&
+				piece.color === color &&
+				piece.getMoves(new Vector(Math.floor(i / 8), i % 8), this).length
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	checkWin() {
+		if (!this.canPlayerMove(!this.turnOf)) {
+			this.showBanner(this.turnOf ? WHITE : BLACK);
+		}
+
 		let whites = 0;
 		let blacks = 0;
 		this.boardArr.forEach((e) => {
@@ -108,9 +129,9 @@ class Game {
 		});
 
 		if (blacks === 0) {
-			this.showBanner("white");
+			this.showBanner(WHITE);
 		} else if (whites === 0) {
-			this.showBanner("black");
+			this.showBanner(BLACK);
 		}
 	}
 
