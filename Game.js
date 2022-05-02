@@ -15,6 +15,7 @@ class Game {
 		this.selected = {};
 		this.resetSelected();
 		this.turnOf = true;
+		this.canEatPieces = [];
 	}
 
 	initGame() {
@@ -65,31 +66,23 @@ class Game {
 	onClick(event) {
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
+		const eatMoves = this.getPlayerEatMoves(this.turnOf);
 		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
 		this.renderer.cleanCells();
 		this.renderer.paintCells([pos], "highlight");
 
-		if (this.canEatPieces) {
-			if (this.canEatPieces.some((e) => e[0].isEqual(pos))) {
-				this.selected.pos = pos;
-				this.selected.moves = this.getPieceAt(pos).getMoves(pos, this).filter(e => e.eating);
-				this.renderer.paintCells(this.selected.moves, "valid-move");
-			} else if (move) {
-				this.movePiece(this.selected.pos, move);
-				this.turnOf = !this.turnOf;
-				this.resetSelected();
-			} else {
-                this.canEatPieces = this.markCanEatPieces();
-				return;
-			}
-		} else if (move) {
+		if (move) {
 			this.movePiece(this.selected.pos, move);
-			this.turnOf = !this.turnOf;
-			this.resetSelected();
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
 			this.selected.pos = pos;
-			this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
+			if (eatMoves.length) {
+				this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
+			} else {
+				this.selected.moves = Array.from(eatMoves, (e) => {
+					if (e[0].isEqual(pos)) return e[1];
+				}).filter((e) => e);
+			}
 			this.renderer.paintCells(this.selected.moves, "valid-move");
 		} else if (this.getPieceAt(pos)) {
 			this.renderer.cleanCells();
@@ -97,13 +90,12 @@ class Game {
 		}
 
 		this.canEatPieces = this.markCanEatPieces();
-
 		this.checkWin();
 	}
 
 	markCanEatPieces() {
-		const canEatPieces = this.canPlayerEat(this.turnOf);
-		if (!canEatPieces) return;
+		const canEatPieces = this.getPlayerEatMoves(this.turnOf);
+		if (!canEatPieces.length) return canEatPieces;
 		this.renderer.paintCells(
 			Array.from(canEatPieces, (e) => e[0]),
 			"can-eat"
@@ -122,6 +114,8 @@ class Game {
 	}
 
 	movePiece(from, to) {
+		this.turnOf = !this.turnOf;
+		this.resetSelected();
 		this.boardArr[to.x * BOARD_SIZE + to.y] =
 			this.boardArr[from.x * BOARD_SIZE + from.y];
 		this.boardArr[from.x * BOARD_SIZE + from.y] = undefined;
@@ -146,7 +140,7 @@ class Game {
 		return false;
 	}
 
-	canPlayerEat(color) {
+	getPlayerEatMoves(color) {
 		const canEatPieces = [];
 		for (let i = 0; i < this.boardArr.length; i++) {
 			const piece = this.boardArr[i];
@@ -159,7 +153,7 @@ class Game {
 				}
 			}
 		}
-		return canEatPieces.length ? canEatPieces : false;
+		return canEatPieces;
 	}
 
 	checkWin() {
