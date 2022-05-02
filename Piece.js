@@ -4,26 +4,29 @@ class Piece {
 		this.imgPath = imgPath;
 	}
 
+	getLeft(dir, pos) {
+		return pos.add(new Vector(1 * dir, -1 * dir));
+	}
+
+	getRight(dir, pos) {
+		return pos.add(new Vector(dir, dir));
+	}
+
 	getMoves(pos, game) {
 		const moves = [];
 		let testMove;
 		const direction = this.color ? -1 : 1;
 
-		moves.push(pos.add(new Vector(direction, direction)));
-		moves.push(pos.add(new Vector(1 * direction, -1 * direction)));
+		moves.push(this.getLeft(direction, pos));
+		moves.push(this.getRight(direction, pos));
 
-		if (game.checkPieceColorAt(moves[0]) === !this.color) {
-			testMove = moves[0].add(direction);
-			testMove.eating = moves[0];
-			if (game.getPieceAt(testMove) === undefined) {
-				moves.push(testMove);
-			}
-		}
-		if (game.checkPieceColorAt(moves[1]) === !this.color) {
-			testMove = moves[1].add(new Vector(1 * direction, -1 * direction));
-			testMove.eating = moves[1];
-			if (game.getPieceAt(testMove) === undefined) {
-				moves.push(testMove);
+		for (let i = 0; i < 2; i++) {
+			if (game.checkPieceColorAt(moves[i]) === !this.color) {
+				testMove = (i===0 ? this.getLeft : this.getRight)(direction, moves[i]);
+				testMove.eating = moves[i];
+				if (game.getPieceAt(testMove) === undefined) {
+					moves.push(testMove);
+				}
 			}
 		}
 
