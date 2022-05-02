@@ -80,6 +80,7 @@ class Game {
 				this.turnOf = !this.turnOf;
 				this.resetSelected();
 			} else {
+                this.canEatPieces = this.markCanEatPieces();
 				return;
 			}
 		} else if (move) {
