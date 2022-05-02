@@ -76,7 +76,7 @@ class Game {
 			this.movePiece(this.selected.pos, move);
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
 			this.selected.pos = pos;
-			if (eatMoves.length) {
+			if (!eatMoves.length) {
 				this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
 			} else {
 				this.selected.moves = Array.from(eatMoves, (e) => {
