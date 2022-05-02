@@ -52,6 +52,10 @@ class Game {
 		return this.boardArr[pos.x * BOARD_SIZE + pos.y];
 	}
 
+	indexToPosition(index) {
+		return new Vector(Math.floor(index / 8), index % 8);
+	}
+
 	checkPieceColorAt(pos) {
 		return this.boardArr[pos.x * BOARD_SIZE + pos.y]
 			? this.boardArr[pos.x * BOARD_SIZE + pos.y].color
@@ -78,7 +82,20 @@ class Game {
 			this.renderer.cleanCells();
 			this.renderer.paintCells([pos], "not-your-turn");
 		}
+
+		this.autoEat();
+
 		this.checkWin();
+	}
+
+	autoEat() {
+		const eatMove = this.canPlayerEat(this.turnOf);
+		if (!eatMove) return;
+		this.movePiece(eatMove[0], eatMove[1]);
+		this.turnOf = !this.turnOf;
+		this.resetSelected();
+		this.renderer.cleanCells();
+		this.autoEat();
 	}
 
 	resetSelected() {
@@ -108,9 +125,24 @@ class Game {
 			if (
 				piece &&
 				piece.color === color &&
-				piece.getMoves(new Vector(Math.floor(i / 8), i % 8), this).length
+				piece.getMoves(this.indexToPosition(i), this).length
 			) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	canPlayerEat(color) {
+		for (let i = 0; i < this.boardArr.length; i++) {
+			const piece = this.boardArr[i];
+			if (piece && piece.color === color) {
+				const moves = piece.getMoves(this.indexToPosition(i), this);
+				for (const move of moves) {
+					if (move.eating) {
+						return [this.indexToPosition(i), move];
+					}
+				}
 			}
 		}
 		return false;
