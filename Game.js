@@ -150,7 +150,19 @@ class Game {
 
 	checkWin() {
 		if (!this.canPlayerMove(!this.turnOf)) {
-			this.showBanner(this.turnOf ? WHITE : BLACK);
+			const winner = this.turnOf ? WHITE : BLACK;
+			const losser = !this.turnOf ? WHITE : BLACK;
+			this.showBanner(
+				winner + " Won!!\n" + losser + " can't make a move..."
+			);
+			return;
+		} else if (!this.canPlayerMove(this.turnOf)) {
+			const winner = !this.turnOf ? WHITE : BLACK;
+			const losser = this.turnOf ? WHITE : BLACK;
+			this.showBanner(
+				winner + " Won!!\n" + losser + " can't make a move..."
+			);
+			return;
 		}
 
 		let whites = 0;
@@ -161,15 +173,15 @@ class Game {
 		});
 
 		if (blacks === 0) {
-			this.showBanner(WHITE);
+			this.showBanner(WHITE + " Won!!" + BLACK + " run out of pieces...");
 		} else if (whites === 0) {
-			this.showBanner(BLACK);
+			this.showBanner(BLACK + " Won!!" + WHITE + " run out of pieces...");
 		}
 	}
 
-	showBanner(playerName) {
+	showBanner(str) {
 		const banner = document.getElementById("win-ovelay");
 		banner.style.display = "inherit";
-		banner.lastElementChild.textContent = playerName + " Won!!";
+		banner.lastElementChild.textContent = str;
 	}
 }
