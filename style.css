@@ -8,6 +8,10 @@
 	background-color: #fdff6f !important;
 }
 
+.not-your-turn {
+	background-color: #e41313 !important;
+}
+
 .valid-move {
 	background-color: #74d77a !important;
 }
@@ -52,19 +56,19 @@
 }
 
 table tr:nth-child(odd) td:nth-child(even) {
-	background: var(--dark);
+	background: var(--light);
 }
 
 table tr:nth-child(even) td:nth-child(odd) {
-	background: var(--dark);
+	background: var(--light);
 }
 
 table tr:nth-child(odd) td:nth-child(odd) {
-	background: var(--light);
+	background: var(--dark);
 }
 
 table tr:nth-child(even) td:nth-child(even) {
-	background: var(--light);
+	background: var(--dark);
 }
 
 td {
