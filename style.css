@@ -1,7 +1,7 @@
 :root {
 	--light: #d8d8d8;
 	--dark: #3d3d3d;
-	--cellSize: 150px;
+	--cellSize: 140px;
 }
 
 .highlight {

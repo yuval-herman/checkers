@@ -1,3 +1,7 @@
+/**
+ * This class contains the movement logic.
+ * It is unaware of it's location and works with information it is given at runtime.
+ */
 class Piece {
 	constructor(color, imgPath) {
 		this.color = color; // Color is boolean, dark is false white is true.

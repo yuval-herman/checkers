@@ -2,7 +2,7 @@
  * A class to hold a 2d position in the board.
  *
  * The advantage in using a class instead of a 2-cell array
- * is it is more mistake-proof and easy to debug, this will allways show errors
+ * is it is more mistake-proof and easy to debug, this will always show errors
  * and won't fail silently.
  */
 class Vector {
@@ -16,9 +16,6 @@ class Vector {
 	}
 
 	add(vec) {
-		if (typeof(vec) === "number") {
-			return new Vector(this.x + vec, this.y + vec);
-		}
 		return new Vector(this.x + vec.x, this.y + vec.y);
 	}
 }

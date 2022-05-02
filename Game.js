@@ -1,24 +1,34 @@
 const BLACK = "blacks";
 const WHITE = "whites";
 
+/**
+ * This class is the game manager.
+ * It controls everything in the backend and uses other components to update the UI
+ */
 class Game {
 	constructor(renderer, htmlTable) {
 		this.renderer = renderer;
 		this.htmlTable = htmlTable;
-		this.boardArr = [];
-		this.onClick = this.onClick.bind(this);
+		this.onClick = this.onClick.bind(this); // makes sure onClick is always called in this context
 		this.htmlTable.modifyCells((cell) =>
 			cell.addEventListener("click", this.onClick)
 		);
 		this.initGame();
-
-		this.selected = {};
-		this.resetSelected();
-		this.turnOf = true;
-		this.canEatPieces = [];
 	}
 
+	/**
+	 * This function initializes the board and game variables.
+	 * It is made in a way so that it can be called mid-game to reset everything.
+	 */
 	initGame() {
+		this.boardArr = []; // holds all piece positions as well as empty cells
+		this.selected = {};
+		this.canEatPieces = [];
+		this.resetSelected();
+		this.turnOf = true;
+
+		// boardArr is a 1d array, as such alternating pieces and empty spaces is a bit more difficult.
+		// I use the alternate variable in order to achieve this.
 		let alternate = true;
 		for (let i = 0; i < BOARD_SIZE * 3; i++) {
 			if (i % 8 !== 0) {
@@ -46,7 +56,8 @@ class Game {
 			}
 		}
 
-		this.renderer.redrawCells(this.boardArr);
+		this.renderer.cleanCells(); // This is for colors not for images
+		this.renderer.drawCells(this.boardArr);
 	}
 
 	getPieceAt(pos) {
@@ -66,7 +77,9 @@ class Game {
 	onClick(event) {
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
+		// get all pieces of player that can eat
 		const eatMoves = this.getPlayerEatMoves(this.turnOf);
+		// check if clicked position is in previously click piece moves
 		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
 		this.renderer.cleanCells();
@@ -75,21 +88,21 @@ class Game {
 		if (move) {
 			this.movePiece(this.selected.pos, move);
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
+			// player clicked his own piece
 			this.selected.pos = pos;
-			if (!eatMoves.length) {
-				this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
-			} else {
-				this.selected.moves = Array.from(eatMoves, (e) => {
-					if (e[0].isEqual(pos)) return e[1];
-				}).filter((e) => e);
+			this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
+			// if the player can eat, only add moves that eat a piece
+			if (eatMoves.length) {
+				this.selected.moves = this.selected.moves.filter((e) => e.eating);
 			}
 			this.renderer.paintCells(this.selected.moves, "valid-move");
 		} else if (this.getPieceAt(pos)) {
+			// player clicked a piece, but not his own
 			this.renderer.cleanCells();
 			this.renderer.paintCells([pos], "not-your-turn");
 		}
 
-		this.canEatPieces = this.markCanEatPieces();
+		this.markCanEatPieces();
 		this.checkWin();
 	}
 
@@ -116,6 +129,7 @@ class Game {
 	movePiece(from, to) {
 		this.turnOf = !this.turnOf;
 		this.resetSelected();
+
 		this.boardArr[to.x * BOARD_SIZE + to.y] =
 			this.boardArr[from.x * BOARD_SIZE + from.y];
 		this.boardArr[from.x * BOARD_SIZE + from.y] = undefined;
@@ -126,6 +140,7 @@ class Game {
 		}
 	}
 
+	// Goes over all pieces and check pieces of player for possible moves
 	canPlayerMove(color) {
 		for (let i = 0; i < this.boardArr.length; i++) {
 			const piece = this.boardArr[i];
@@ -140,6 +155,7 @@ class Game {
 		return false;
 	}
 
+	// Check all pieces of player for eating moves and returns them in an array
 	getPlayerEatMoves(color) {
 		const canEatPieces = [];
 		for (let i = 0; i < this.boardArr.length; i++) {
@@ -156,23 +172,10 @@ class Game {
 		return canEatPieces;
 	}
 
+	// Check for win in two ways:
+	// 1. By eating all enemy pieces.
+	// 2. By making enemy unable to move.
 	checkWin() {
-		if (!this.canPlayerMove(!this.turnOf)) {
-			const winner = this.turnOf ? WHITE : BLACK;
-			const losser = !this.turnOf ? WHITE : BLACK;
-			this.showBanner(
-				winner + " Won!!\n" + losser + " can't make a move..."
-			);
-			return;
-		} else if (!this.canPlayerMove(this.turnOf)) {
-			const winner = !this.turnOf ? WHITE : BLACK;
-			const losser = this.turnOf ? WHITE : BLACK;
-			this.showBanner(
-				winner + " Won!!\n" + losser + " can't make a move..."
-			);
-			return;
-		}
-
 		let whites = 0;
 		let blacks = 0;
 		this.boardArr.forEach((e) => {
@@ -182,13 +185,31 @@ class Game {
 
 		if (blacks === 0) {
 			this.showBanner(WHITE + " Won!!" + BLACK + " run out of pieces...");
+			return;
 		} else if (whites === 0) {
 			this.showBanner(BLACK + " Won!!" + WHITE + " run out of pieces...");
+			return;
+		}
+
+		if (!this.canPlayerMove(!this.turnOf)) {
+			const winner = this.turnOf ? WHITE : BLACK;
+			const looser = !this.turnOf ? WHITE : BLACK;
+			this.showBanner(
+				winner + " Won!!\n" + looser + " can't make a move..."
+			);
+			return;
+		} else if (!this.canPlayerMove(this.turnOf)) {
+			const winner = !this.turnOf ? WHITE : BLACK;
+			const looser = this.turnOf ? WHITE : BLACK;
+			this.showBanner(
+				winner + " Won!!\n" + looser + " can't make a move..."
+			);
+			return;
 		}
 	}
 
 	showBanner(str) {
-		const banner = document.getElementById("win-ovelay");
+		const banner = document.getElementById("win-overlay");
 		banner.style.display = "inherit";
 		banner.lastElementChild.textContent = str;
 	}

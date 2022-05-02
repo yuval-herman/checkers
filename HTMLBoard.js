@@ -1,5 +1,9 @@
 const BOARD_SIZE = 8;
 
+/**
+ * This class primarily holds the HTML table.
+ * It also provides bare minimum functions to manipulate pieces on the table.
+ */
 class HTMLBoard {
 	constructor() {
 		this.HTMLtable;

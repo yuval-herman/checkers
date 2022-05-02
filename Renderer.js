@@ -1,3 +1,6 @@
+/**
+ * A class used to connect between the UI and the backend.
+ */
 class Renderer {
 	constructor(board) {
 		this.board = board;
@@ -11,12 +14,13 @@ class Renderer {
 		return img;
 	}
 
-	redrawCells(elementArray) {
+	drawCells(elementArray) {
 		let index = 0;
 		for (const row of this.board.HTMLtable.rows) {
 			for (const cell of row.cells) {
 				const element = elementArray[index];
 				index++;
+				cell.innerHTML = ""; // always delete any previous image
 				if (!element) continue;
 				cell.appendChild(this.renderPiece(element));
 			}
