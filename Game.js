@@ -61,7 +61,7 @@ class Game {
 		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
 		this.renderer.cleanCells();
-		this.renderer.paintCells([pos], "highlight");
+        this.renderer.paintCells([pos], "highlight");
 
 		if (move) {
 			this.movePiece(this.selected.pos, move);
@@ -71,7 +71,10 @@ class Game {
 			this.selected.pos = pos;
 			this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
 			this.renderer.paintCells(this.selected.moves, "valid-move");
-		}
+		} else if (this.getPieceAt(pos)) {
+            this.renderer.cleanCells();
+			this.renderer.paintCells([pos], "not-your-turn");
+        }
 		this.checkWin();
 	}
 
