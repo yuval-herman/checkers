@@ -17,6 +17,9 @@ class Piece {
 	}
 
 	getMoves(pos, game) {
+		if (this.king) {
+			return this.getKingMoves(pos, game);
+		}
 		const moves = [];
 		let testMove;
 		const direction = this.color ? -1 : 1;
@@ -28,6 +31,9 @@ class Piece {
 	}
 
 	getEatMoves(pos, game, backwards) {
+		if (this.king) {
+			return this.getKingEatMoves(pos, game);
+		}
 		const moves = [];
 		const frontPieces = [];
 		let testMove;
@@ -51,6 +57,35 @@ class Piece {
 		}
 
 		return this.filterMoves(moves, game);
+	}
+
+	turnToKing() {
+		this.king = true;
+		this.imgPath = this.imgPath.replace("Piece", "King");
+	}
+
+	getKingMoves(pos, game) {
+		const moves = [];
+		for (let i = -1; i < 2; i+=2) {
+			moves.push(...this.castRay(new Vector(i, -1), pos, game));
+			moves.push(...this.castRay(new Vector(i, 1), pos, game));
+		}
+		return this.filterMoves(moves, game);
+	}
+
+	getKingEatMoves(pos, game) {
+		return [];
+	}
+
+	castRay(dir, pos, game) {
+		let nextPos = pos;
+		const positions = [nextPos];
+		for (let i = 0; i < BOARD_SIZE; i++) {
+			nextPos = positions[i].add(dir);
+			if (game.getPieceAt(nextPos)) break;
+			positions.push(nextPos);
+		}
+		return positions;
 	}
 
 	filterMoves(moves, game) {

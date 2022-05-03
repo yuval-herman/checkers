@@ -142,7 +142,8 @@ class Game {
 			this.removePiece(to.eating);
 		}
 		if (to.x === (to.color ? 7 : 0)) {
-			this.getPieceAt(to).king = true
+			this.getPieceAt(to).turnToKing();
+			this.renderer.drawCells(this.boardArr)
 		}
 	}
 
