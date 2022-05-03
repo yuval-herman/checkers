@@ -88,10 +88,10 @@ class Game {
 			this.movePiece(this.selected.pos, move);
 			this.turnOf = !this.getPieceAt(move).color;
 			if (move.eating) {
+				// If the player ate a piece we allow to eat more even not on player turn
 				const nextEatMoves = this.getPieceAt(move)
 					.getEatMoves(move, this)
 					.concat(this.getPieceAt(move).getEatMoves(move, this, true));
-				console.log(nextEatMoves);
 				if (nextEatMoves) {
 					this.playerPieceClick(move, nextEatMoves);
 				}
