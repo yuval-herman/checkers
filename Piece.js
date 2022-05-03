@@ -66,7 +66,7 @@ class Piece {
 
 	getKingMoves(pos, game) {
 		const moves = [];
-		for (let i = -1; i < 2; i+=2) {
+		for (let i = -1; i < 2; i += 2) {
 			moves.push(...this.castRay(new Vector(i, -1), pos, game));
 			moves.push(...this.castRay(new Vector(i, 1), pos, game));
 		}
@@ -74,7 +74,23 @@ class Piece {
 	}
 
 	getKingEatMoves(pos, game) {
-		return [];
+		const moves = [];
+		for (let i = -1; i < 2; i += 2) {
+			for (let j = -1; j < 2; j += 2) {
+				const addVec = new Vector(i, j);
+				const testMoves = this.castRay(addVec, pos, game);
+				const testMove = testMoves[testMoves.length - 1];
+				if (
+					game.getPieceAt(testMove) &&
+					game.getPieceAt(testMove).color !== this.color
+				) {
+					const eatMove = testMove.add(addVec);
+					eatMove.eating = testMove;
+					if (game.getPieceAt(eatMove) === undefined) moves.push(eatMove);
+				}
+			}
+		}
+		return this.filterMoves(moves, game);
 	}
 
 	castRay(dir, pos, game) {
@@ -82,8 +98,8 @@ class Piece {
 		const positions = [nextPos];
 		for (let i = 0; i < BOARD_SIZE; i++) {
 			nextPos = positions[i].add(dir);
-			if (game.getPieceAt(nextPos)) break;
 			positions.push(nextPos);
+			if (game.getPieceAt(nextPos)) break;
 		}
 		return positions;
 	}
