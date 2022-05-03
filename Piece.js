@@ -27,11 +27,12 @@ class Piece {
 		return this.filterMoves(moves, game);
 	}
 
-	getEatMoves(pos, game) {
+	getEatMoves(pos, game, backwards) {
 		const moves = [];
-		const frontPieces = []
+		const frontPieces = [];
 		let testMove;
-		const direction = this.color ? -1 : 1;
+		let direction = this.color ? -1 : 1;
+		if (backwards) direction *= -1;
 
 		frontPieces.push(this.getLeft(direction, pos));
 		frontPieces.push(this.getRight(direction, pos));
