@@ -190,10 +190,10 @@ class Game {
 		});
 
 		if (blacks === 0) {
-			this.showBanner(WHITE + " Won!!" + BLACK + " run out of pieces...");
+			this.showBanner(WHITE + " Won!!<br>" + BLACK + " run out of pieces...");
 			return;
 		} else if (whites === 0) {
-			this.showBanner(BLACK + " Won!!" + WHITE + " run out of pieces...");
+			this.showBanner(BLACK + " Won!!<br>" + WHITE + " run out of pieces...");
 			return;
 		}
 
@@ -201,14 +201,14 @@ class Game {
 			const winner = this.turnOf ? WHITE : BLACK;
 			const looser = !this.turnOf ? WHITE : BLACK;
 			this.showBanner(
-				winner + " Won!!\n" + looser + " can't make a move..."
+				winner + " Won!!<br>" + looser + " can't make a move..."
 			);
 			return;
 		} else if (!this.canPlayerMove(this.turnOf)) {
 			const winner = !this.turnOf ? WHITE : BLACK;
 			const looser = this.turnOf ? WHITE : BLACK;
 			this.showBanner(
-				winner + " Won!!\n" + looser + " can't make a move..."
+				winner + " Won!!<br>" + looser + " can't make a move..."
 			);
 			return;
 		}
@@ -217,6 +217,6 @@ class Game {
 	showBanner(str) {
 		const banner = document.getElementById("win-overlay");
 		banner.style.display = "inherit";
-		banner.lastElementChild.textContent = str;
+		banner.lastElementChild.innerHTML = str;
 	}
 }

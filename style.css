@@ -49,6 +49,7 @@
 }
 
 .win-banner {
+	text-align: center;
 	position: absolute;
 	background-color: whitesmoke;
 	border-radius: 15px;
