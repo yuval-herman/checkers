@@ -24,10 +24,25 @@ class Piece {
 		moves.push(this.getLeft(direction, pos));
 		moves.push(this.getRight(direction, pos));
 
+		return this.filterMoves(moves, game);
+	}
+
+	getEatMoves(pos, game) {
+		const moves = [];
+		const frontPieces = []
+		let testMove;
+		const direction = this.color ? -1 : 1;
+
+		frontPieces.push(this.getLeft(direction, pos));
+		frontPieces.push(this.getRight(direction, pos));
+
 		for (let i = 0; i < 2; i++) {
-			if (game.checkPieceColorAt(moves[i]) === !this.color) {
-				testMove = (i===0 ? this.getLeft : this.getRight)(direction, moves[i]);
-				testMove.eating = moves[i];
+			if (game.checkPieceColorAt(frontPieces[i]) === !this.color) {
+				testMove = (i === 0 ? this.getLeft : this.getRight)(
+					direction,
+					frontPieces[i]
+				);
+				testMove.eating = frontPieces[i];
 				if (game.getPieceAt(testMove) === undefined) {
 					moves.push(testMove);
 				}

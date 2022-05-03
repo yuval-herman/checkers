@@ -77,7 +77,7 @@ class Game {
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
 		// get all pieces of player that can eat
-		const eatMoves = this.getPlayerEatPieces(this.turnOf);
+		const eatPieces = this.getPlayerEatPieces(this.turnOf);
 		// check if clicked position is in previously click piece moves
 		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
@@ -90,11 +90,10 @@ class Game {
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
 			// player clicked his own piece
 			this.selected.pos = pos;
-			this.selected.moves = this.getPieceAt(pos).getMoves(pos, this);
-			// if the player can eat, only add moves that eat a piece
-			if (eatMoves.length) {
-				this.selected.moves = this.selected.moves.filter((e) => e.eating);
-			}
+			this.selected.moves = !eatPieces.length
+				? this.getPieceAt(pos).getMoves(pos, this)
+				: this.getPieceAt(pos).getEatMoves(pos, this);
+
 			this.renderer.paintCells(this.selected.moves, "valid-move");
 		} else if (this.getPieceAt(pos)) {
 			// player clicked a piece, but not his own
@@ -150,12 +149,10 @@ class Game {
 		for (let i = 0; i < this.boardArr.length; i++) {
 			const piece = this.boardArr[i];
 			if (piece && piece.color === color) {
-				const moves = piece.getMoves(this.indexToPosition(i), this);
+				const moves = piece.getEatMoves(this.indexToPosition(i), this);
 				for (const move of moves) {
-					if (move.eating) {
-						canEatPieces.push(this.indexToPosition(i));
-						continue;
-					}
+					canEatPieces.push(this.indexToPosition(i));
+					continue;
 				}
 			}
 		}
