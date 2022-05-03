@@ -73,6 +73,7 @@ class Piece {
 		return this.filterMoves(moves, game);
 	}
 
+	// Uses the rayCast to get to either the end of the board or an enemy piece
 	getKingEatMoves(pos, game) {
 		const moves = [];
 		for (let i = -1; i < 2; i += 2) {

@@ -14,13 +14,15 @@ class Renderer {
 		return img;
 	}
 
+	// Loops through the table and draws pieces.
+	// It also deletes previously drawn images.
 	drawCells(elementArray) {
 		let index = 0;
 		for (const row of this.board.HTMLtable.rows) {
 			for (const cell of row.cells) {
 				const element = elementArray[index];
 				index++;
-				cell.innerHTML = ""; // always delete any previous image
+				cell.innerHTML = "";
 				if (!element) continue;
 				cell.appendChild(this.renderPiece(element));
 			}
@@ -42,6 +44,7 @@ class Renderer {
 		});
 	}
 
+	// remove cell paint
 	cleanCells() {
 		for (const cell of this.paintedCells) {
 			cell.className = "";

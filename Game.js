@@ -130,6 +130,7 @@ class Game {
 		this.renderer.removePiece(pos);
 	}
 
+	// Moves a piece and promotes to king if necessary
 	movePiece(from, to) {
 		this.resetSelected();
 
@@ -141,6 +142,7 @@ class Game {
 		if (to.eating) {
 			this.removePiece(to.eating);
 		}
+		// If the piece reached the end of the board, remove it.
 		if (to.x === (this.getPieceAt(to).color ? 0 : 7)) {
 			this.getPieceAt(to).turnToKing();
 			this.renderer.drawCells(this.boardArr)
