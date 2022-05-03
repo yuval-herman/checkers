@@ -1,3 +1,8 @@
+# Explanation videos:
+1. [gui explanation](https://youtu.be/8R7CO7tH_UE)
+2. [classes explanation](https://youtu.be/PdsCRfc0ymg)
+3. [Game class explanation](https://youtu.be/tj6DbhCWuw8)
+
 # Project Structure (plan):
 
 ## classes
