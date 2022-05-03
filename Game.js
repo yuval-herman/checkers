@@ -88,9 +88,12 @@ class Game {
 			this.movePiece(this.selected.pos, move);
 			this.turnOf = !this.getPieceAt(move).color;
 			if (move.eating) {
-				const nextEatMoves = this.getPieceAt(move).getEatMoves(move, this);
+				const nextEatMoves = this.getPieceAt(move)
+					.getEatMoves(move, this)
+					.concat(this.getPieceAt(move).getEatMoves(move, this, true));
+				console.log(nextEatMoves);
 				if (nextEatMoves) {
-					this.playerPieceClick(move, nextEatMoves)
+					this.playerPieceClick(move, nextEatMoves);
 				}
 			}
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
