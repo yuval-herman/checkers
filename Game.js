@@ -141,6 +141,9 @@ class Game {
 		if (to.eating) {
 			this.removePiece(to.eating);
 		}
+		if (to.x === (to.color ? 7 : 0)) {
+			this.getPieceAt(to).king = true
+		}
 	}
 
 	// Goes over all pieces and check pieces of player for possible moves
