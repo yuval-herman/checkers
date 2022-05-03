@@ -23,7 +23,6 @@ class Game {
 	initGame() {
 		this.boardArr = []; // holds all piece positions as well as empty cells
 		this.selected = {};
-		this.canEatPieces = [];
 		this.resetSelected();
 		this.turnOf = true;
 
@@ -78,7 +77,7 @@ class Game {
 		const cell = event.currentTarget;
 		const pos = new Vector(cell.parentNode.rowIndex, cell.cellIndex);
 		// get all pieces of player that can eat
-		const eatMoves = this.getPlayerEatMoves(this.turnOf);
+		const eatMoves = this.getPlayerEatPieces(this.turnOf);
 		// check if clicked position is in previously click piece moves
 		const move = this.selected.moves.find((e) => pos.isEqual(e));
 
@@ -87,6 +86,7 @@ class Game {
 
 		if (move) {
 			this.movePiece(this.selected.pos, move);
+			this.turnOf = !this.turnOf;
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
 			// player clicked his own piece
 			this.selected.pos = pos;
@@ -102,18 +102,8 @@ class Game {
 			this.renderer.paintCells([pos], "not-your-turn");
 		}
 
-		this.markCanEatPieces();
+		this.renderer.paintCells(this.getPlayerEatPieces(this.turnOf), "can-eat");
 		this.checkWin();
-	}
-
-	markCanEatPieces() {
-		const canEatPieces = this.getPlayerEatMoves(this.turnOf);
-		if (!canEatPieces.length) return canEatPieces;
-		this.renderer.paintCells(
-			Array.from(canEatPieces, (e) => e[0]),
-			"can-eat"
-		);
-		return canEatPieces;
 	}
 
 	resetSelected() {
@@ -127,7 +117,6 @@ class Game {
 	}
 
 	movePiece(from, to) {
-		this.turnOf = !this.turnOf;
 		this.resetSelected();
 
 		this.boardArr[to.x * BOARD_SIZE + to.y] =
@@ -156,7 +145,7 @@ class Game {
 	}
 
 	// Check all pieces of player for eating moves and returns them in an array
-	getPlayerEatMoves(color) {
+	getPlayerEatPieces(color) {
 		const canEatPieces = [];
 		for (let i = 0; i < this.boardArr.length; i++) {
 			const piece = this.boardArr[i];
@@ -164,7 +153,8 @@ class Game {
 				const moves = piece.getMoves(this.indexToPosition(i), this);
 				for (const move of moves) {
 					if (move.eating) {
-						canEatPieces.push([this.indexToPosition(i), move]);
+						canEatPieces.push(this.indexToPosition(i));
+						continue;
 					}
 				}
 			}
