@@ -86,15 +86,21 @@ class Game {
 
 		if (move) {
 			this.movePiece(this.selected.pos, move);
-			this.turnOf = !this.turnOf;
+			this.turnOf = !this.getPieceAt(move).color;
+			if (move.eating) {
+				const nextEatMoves = this.getPieceAt(move).getEatMoves(move, this);
+				if (nextEatMoves) {
+					this.playerPieceClick(move, nextEatMoves)
+				}
+			}
 		} else if (this.checkPieceColorAt(pos) === this.turnOf) {
 			// player clicked his own piece
-			this.selected.pos = pos;
-			this.selected.moves = !eatPieces.length
-				? this.getPieceAt(pos).getMoves(pos, this)
-				: this.getPieceAt(pos).getEatMoves(pos, this);
-
-			this.renderer.paintCells(this.selected.moves, "valid-move");
+			this.playerPieceClick(
+				pos,
+				!eatPieces.length
+					? this.getPieceAt(pos).getMoves(pos, this)
+					: this.getPieceAt(pos).getEatMoves(pos, this)
+			);
 		} else if (this.getPieceAt(pos)) {
 			// player clicked a piece, but not his own
 			this.renderer.cleanCells();
@@ -103,6 +109,12 @@ class Game {
 
 		this.renderer.paintCells(this.getPlayerEatPieces(this.turnOf), "can-eat");
 		this.checkWin();
+	}
+
+	playerPieceClick(pos, moves) {
+		this.selected.pos = pos;
+		this.selected.moves = moves;
+		this.renderer.paintCells(this.selected.moves, "valid-move");
 	}
 
 	resetSelected() {
